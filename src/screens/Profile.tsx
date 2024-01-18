@@ -12,6 +12,11 @@ import * as FileSystem from 'expo-file-system'
 
 const PHOTO_SIZE = 33
 
+
+type File = FileSystem.FileInfo & {
+  size: number
+}
+
 export function Profile() {
 
   const toast = useToast()
@@ -37,7 +42,7 @@ export function Profile() {
 
       if (photoSelected.assets[0].uri) {
 
-        const photoInfo = await FileSystem.getInfoAsync(photoSelected.assets[0].uri)
+        const photoInfo = await FileSystem.getInfoAsync(photoSelected.assets[0].uri) as File
 
         console.log(photoInfo)
 
