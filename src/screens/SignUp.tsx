@@ -29,7 +29,11 @@ export function SignUp() {
     console.log({ name, email, password, password_confirm })
   }
 
-  const { control, handleSubmit } = useForm<FormDataProps>()
+  const { control, handleSubmit } = useForm<FormDataProps>({
+    defaultValues: {
+      name: 'Antonio'
+    }
+  })
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
