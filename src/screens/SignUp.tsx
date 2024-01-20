@@ -25,15 +25,20 @@ export function SignUp() {
     return navigation.goBack()
   }
 
-  function handleSignUp({ name, email, password, password_confirm }: FormDataProps) {
+  function handleSignUp({
+    name,
+    email,
+    password,
+    password_confirm
+  }: FormDataProps) {
     console.log({ name, email, password, password_confirm })
   }
 
-  const { control, handleSubmit } = useForm<FormDataProps>({
-    defaultValues: {
-      name: 'Antonio'
-    }
-  })
+  const {
+    control,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<FormDataProps>()
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
@@ -58,11 +63,15 @@ export function SignUp() {
           <Controller
             control={control}
             name='name'
+            rules={{
+              required: 'O campo de nome deve ser informado.'
+            }}
             render={({ field: { onChange, value } }) => (
               <Input
                 placeholder='Nome'
                 onChangeText={onChange}
                 value={value}
+                errorMessage={errors.name?.message}
               />
             )}
           />
@@ -70,6 +79,13 @@ export function SignUp() {
           <Controller
             control={control}
             name='email'
+            rules={{
+              required: 'O campo de email é obrigatório',
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: 'E-mail inválido'
+              }
+            }}
             render={({ field: { onChange, value } }) => (
               <Input
                 placeholder='E-mail'
@@ -77,6 +93,7 @@ export function SignUp() {
                 autoCapitalize='none'
                 onChangeText={onChange}
                 value={value}
+                errorMessage={errors.email?.message}
               />
             )}
           />
