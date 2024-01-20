@@ -10,6 +10,9 @@ import { AuthNavigatorRoutesProps } from '@routes/auth.routes'
 
 import { useForm, Controller } from 'react-hook-form'
 
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+
 type FormDataProps = {
   name: string
   email: string
@@ -17,7 +20,20 @@ type FormDataProps = {
   password_confirm: string
 }
 
+const signUpSchema = yup.object({
+  name: yup.string().required('O campo de nome deve ser informado.'),
+  email: yup.string().required('O campo de email é obrigatório.').email('O email informado é inválido.'),
+  password: yup.string().required('A senha é um campo obrigatório.').min(6, 'A senha deve conter no mínimo 6 caracretes'),
+  password_confirm: yup.string().required('Confirmar a senha é obrigatório.').oneOf([yup.ref('password')], 'As senhas devem ser idênticas')
+})
+
 export function SignUp() {
+
+
+  const { control, handleSubmit, formState: { errors } } = useForm<FormDataProps>({
+    resolver: yupResolver(signUpSchema)
+  })
+
 
   const navigation = useNavigation<AuthNavigatorRoutesProps>()
 
@@ -34,11 +50,7 @@ export function SignUp() {
     console.log({ name, email, password, password_confirm })
   }
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors }
-  } = useForm<FormDataProps>()
+
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
@@ -63,9 +75,6 @@ export function SignUp() {
           <Controller
             control={control}
             name='name'
-            rules={{
-              required: 'O campo de nome deve ser informado.'
-            }}
             render={({ field: { onChange, value } }) => (
               <Input
                 placeholder='Nome'
@@ -79,13 +88,6 @@ export function SignUp() {
           <Controller
             control={control}
             name='email'
-            rules={{
-              required: 'O campo de email é obrigatório',
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'E-mail inválido'
-              }
-            }}
             render={({ field: { onChange, value } }) => (
               <Input
                 placeholder='E-mail'
@@ -108,6 +110,7 @@ export function SignUp() {
                 keyboardType='default'
                 onChangeText={onChange}
                 value={value}
+                errorMessage={errors.password?.message}
               />
             )}
           />
@@ -124,6 +127,7 @@ export function SignUp() {
                 value={value}
                 onSubmitEditing={handleSubmit(handleSignUp)}
                 returnKeyType='send'
+                errorMessage={errors.password_confirm?.message}
               />
             )}
           />
@@ -135,7 +139,7 @@ export function SignUp() {
         <Button
           title='Voltar para o login'
           variant='outline'
-          mt={24}
+          mt={12}
           onPress={handleGoBack}
         />
       </VStack>

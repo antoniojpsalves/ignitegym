@@ -19,7 +19,7 @@ export function HomeHeader() {
       />
       <VStack flex={1}>
         <Text color='gray.100' fontSize='md'>Olá,</Text>
-        <Heading color='gray.100' fontSize='md'>Antonio</Heading>
+        <Heading color='gray.100' fontSize='md' fontFamily='heading'>Antonio</Heading>
       </VStack>
 
       <TouchableOpacity>
